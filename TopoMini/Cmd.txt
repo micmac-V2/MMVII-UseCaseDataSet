@@ -18,7 +18,7 @@ MMVII ImportGCP inputs/coords.txt ANXYZ InitRTL ChSys=[L93,RTL] AddInfoFree=0 Si
 MMVII ImportOBS inputs/meas.obs Obs1
 
 # adjust
-MMVII TopoAdj Obs1 Obs1_out [[InitRTL,1.,FinalRTL]] UC_UK="[.*,.*,.*,1]"
+MMVII OriBundleAdj NONE NONE NONE GCP3D=[[InitRTL,1.,FinalRTL]] TopoDirIn=Obs1 TopoDirOut=Obs1_out
 
 # export to L93
 MMVII GCPChSysCo L93 FinalRTL FinalL93
