@@ -1,12 +1,15 @@
 set -e
 
-# Define some parameters.
+# The script must be launched from it's directory.
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+cd "$script_dir"
+
+# Workflow parameters.
 image_pattern='.*tif'
 img_test='043_0005_Scaled.tif'
 gcp_coordinates_file='input_data/Panel_3D_coordinates.txt'
 
-
-# Assign metadata: camera model + focal length + bloc structure.
+# Assign camera model, focal length, and block structure.
 MMVII EditCalcMTDI ModelCam ImTest="$img_test" Modif=["$image_pattern","NIKON D5600",0] Save=1
 MMVII EditCalcMTDI Focalmm ImTest="$img_test" Modif=["$image_pattern",24,0] Save=1
 MMVII EditCalcMTDI AdditionalName ImTest="$img_test" Modif=["(.*)_.*_.*","\$1",0] Save=1
@@ -20,14 +23,14 @@ MMVII CodedTargetGenerateEncoding CERN 14 GCPNames=Panel_3D Out=Targets_Encoding
 MMVII CodedTargetGenerate Targets_Encoding_Panel.xml Out=Targets_FullSpecif_Panel.xml
 
 # Extract targets and keep only images with suitable GCP distribution.
-MMVII CodedTargetCircExtract "$image_pattern" Targets_FullSpecif_Panel.xml DiamMin=5 OutObjMesInstr=Panel_2D ZoomVisuEllipse=1
+MMVII CodedTargetCircExtract "$image_pattern" Targets_FullSpecif_Panel.xml OutObjMesInstr=Panel_2D ZoomVisuEllipse=1
 MMVII OriPoseEstimCheckGCPDist "$image_pattern" Panel_3D Panel_2D PrefSave=imgs
 
 # Estimate initial poses and run the first bundle adjustment.
 MMVII OriPoseEstimSpaceResection imgs_OK_Resec.xml Panel_3D Panel_2D CalibInit_311 SR_311
 MMVII OriBundleAdj imgs_OK_Resec.xml SR_311 BA0_311 GCP3D=[[Panel_3D,0.001]] GCP2D=[[Panel_2D,0.1,1,-1,1]] NbIter=20
 
-# Complete uncoded targets, and run a second bundle adjustment with all detected targets.
+# Complete uncoded targets and run a second bundle adjustment with all detections.
 MMVII CodedTargetCompleteUncoded imgs_OK_Resec.xml BA0_311 1.0 Panel_3D Panel_2D Panel_2D_Completed
 MMVII OriBundleAdj imgs_OK_Resec.xml BA0_311 BA1_311 GCP3D=[[Panel_3D,0.001]] GCP2D=[[Panel_2D_Completed,0.1,1,-1,1]] NbIter=10
 MMVII ReportGCP imgs_OK_Resec.xml Panel_3D Panel_2D_Completed BA1_311
