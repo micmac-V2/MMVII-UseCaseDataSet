@@ -16,6 +16,7 @@ links to their tutorials and processing scripts.
 | Dataset | Description | Wiki tutorial | Processing script |
 | --- | --- | --- | --- |
 | [Circular Coded Targets](./Circular-Coded-Targets/) | Images from two cameras of a calibration panel with coded and uncoded circular targets whose 3D coordinates are known. The workflow detects targets, estimates image poses, refines them with bundle adjustment, and estimates the camera block. | [Circular Coded Targets](https://github.com/micmac-V2/MMVII-UseCaseDataSet/wiki/Circular-Coded-Targets) | [`cmds_Circular-Coded-Targets.sh`](./Circular-Coded-Targets/cmds_Circular-Coded-Targets.sh) |
+| [TopoMini](./TopoMini/) | A minimal example of a topometric network adjustment using angular and distance observations and approximate coordinates. | [TopoMini](https://github.com/micmac-V2/MMVII-UseCaseDataSet/wiki/TopoMini) | [`cmds_TopoMini.sh`](./TopoMini/cmds_TopoMini.sh) |
 
 ## Requirements
 
